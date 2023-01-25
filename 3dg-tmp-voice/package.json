@@ -1,0 +1,11 @@
+{
+    "name": "3dg-tmp-voice",
+    "version": "1.0.0",
+    "description": "A discord bot to handle temporary voice channels",
+    "main": "index.js",
+    "author": "marcelnoehre",
+    "license": "ISC",
+    "dependencies": {
+        "discord.js": "^14.7.1"
+    }
+}
