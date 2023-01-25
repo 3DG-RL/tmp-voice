@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, ChannelType, PermissionsBitField } = require('discord.js');
 
 const client = new Client({
     intents: [
@@ -30,6 +30,8 @@ const teams = [
     '1014263903905124392', //E-Sport Team
 ];
 
+const tmpTeams = new Collection();
+
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -38,15 +40,7 @@ client.on('messageCreate', function(msg) {
     if (msg.content === '/3dg-tmp-voice') {
         msg.reply('Connection established!');
     } else if (msg.content === '/3dg-team') {
-        teams.every(team => {
-            if (msg.member.roles.cache.has(team)) {
-                msg.reply(msg.member.roles.cache.get(team).name);
-                return false;
-            } else {
-                return true;
-            }
-        });
-
+        msg.reply(getTeam(msg.member));
     }
 });
 
@@ -54,10 +48,20 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member.user.bot) {
         return;
     } else if (oldState.channelId === null) {
-        if (newState.channelId === '1067883330751692882') {
-            console.log('Connected!!!');
-            //TODO: create tmp channel
-            //TODO: move user
+        if (newState.channelId === '1067923396354113617') {
+            const team = getTeam(newState.member);
+            const role = newState.guild.roles.cache.find(role => role.name === team);
+            const channel = newState.member.guild.channels.create({
+                name: team,
+                type: ChannelType.GuildVoice,
+                parent: '1063634429819498570',
+                permissionOverwrites: [{
+                    id: role.id,
+                    allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
+                }],
+            }).then((channel) => {
+                newState.member.voice.setChannel(channel);
+            });
         }
     } else {
         //TODO: remove empty tmp channels
@@ -65,3 +69,11 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 client.login('#####');
+
+function getTeam(member) {
+    for (let i = 0; i < teams.length; i++) {
+        if (member.roles.cache.has(teams[i])) {
+            return member.roles.cache.get(teams[i]).name;
+        }
+    }
+}
