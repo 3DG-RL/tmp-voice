@@ -31,6 +31,7 @@ const teams = [
 ];
 
 const tmpTeams = new Collection();
+const teamKeys = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -60,11 +61,22 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
                 }],
             }).then((channel) => {
+                teamKeys.push(team);
+                tmpTeams.set(team, channel);
                 newState.member.voice.setChannel(channel);
-            });
+            }).catch();
         }
     } else {
-        //TODO: remove empty tmp channels
+        teamKeys.forEach(key => {
+            if (tmpTeams.get(key).members.size === 0) {
+                tmpTeams.get(key).delete();
+                tmpTeams.delete(key);
+                var index = teamKeys.indexOf(key)
+                if (index > -1) {
+                    teamKeys.splice(index, 1); // 2nd parameter means remove one item only
+                }
+            }
+        });
     }
 });
 
