@@ -5,7 +5,8 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent,
-        GatewayIntentBits.GuildMembers
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildVoiceStates
     ],
 });
 
@@ -46,6 +47,20 @@ client.on('messageCreate', function(msg) {
             }
         });
 
+    }
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+    if (oldState.member.user.bot) {
+        return;
+    } else if (oldState.channelId === null) {
+        if (newState.channelId === '1067883330751692882') {
+            console.log('Connected!!!');
+            //TODO: create tmp channel
+            //TODO: move user
+        }
+    } else {
+        //TODO: remove empty tmp channels
     }
 });
 
