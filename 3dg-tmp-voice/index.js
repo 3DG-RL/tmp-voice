@@ -34,6 +34,8 @@ const tmpTeams = new Collection();
 const teamKeys = [];
 const tmpStreamer = new Collection();
 const streamerKeys = [];
+const tmpSearchPlayers = new Collection();
+const searchPlayersKeys = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -89,6 +91,17 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     tmpStreamer.set(newState.member.user.id, channel);
                     newState.member.voice.setChannel(channel);
                 }).catch();
+            case '1068274454557372556':
+                var iterator = Math.max(...searchPlayersKeys) === -Infinity? 1 : Math.max(...searchPlayersKeys) + 1;
+                channel = newState.member.guild.channels.create({
+                    name: 'Spielersuche ' + iterator,
+                    type: ChannelType.GuildVoice,
+                    parent: '1055543864561246218',
+                }).then((channel) => {
+                    searchPlayersKeys.push(iterator);
+                    tmpSearchPlayers.set(iterator, channel);
+                    newState.member.voice.setChannel(channel);
+                }).catch();
         }
     } else {
         teamKeys.forEach(key => {
@@ -108,6 +121,16 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 var index = streamerKeys.indexOf(key)
                 if (index > -1) {
                     streamerKeys.splice(index, 1);
+                }
+            }
+        });
+        searchPlayersKeys.forEach(key => {
+            if (tmpSearchPlayers.get(key).members.size === 0) {
+                tmpSearchPlayers.get(key).delete();
+                tmpSearchPlayers.delete(key);
+                var index = searchPlayersKeys.indexOf(key)
+                if (index > -1) {
+                    searchPlayersKeys.splice(index, 1);
                 }
             }
         });
