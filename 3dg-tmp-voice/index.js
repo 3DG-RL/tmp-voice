@@ -32,6 +32,8 @@ const teams = [
 
 const tmpTeams = new Collection();
 const teamKeys = [];
+const tmpStreamer = new Collection();
+const streamerKeys = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -49,22 +51,44 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member.user.bot) {
         return;
     } else if (oldState.channelId === null) {
-        if (newState.channelId === '1067923396354113617') {
-            const team = getTeam(newState.member);
-            const role = newState.guild.roles.cache.find(role => role.name === team);
-            const channel = newState.member.guild.channels.create({
-                name: team,
-                type: ChannelType.GuildVoice,
-                parent: '1063634429819498570',
-                permissionOverwrites: [{
-                    id: role.id,
-                    allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
-                }],
-            }).then((channel) => {
-                teamKeys.push(team);
-                tmpTeams.set(team, channel);
-                newState.member.voice.setChannel(channel);
-            }).catch();
+        var channel;
+        switch(newState.channelId) {
+            case '1067923396354113617':
+                const team = getTeam(newState.member);
+                const role = newState.guild.roles.cache.find(role => role.name === team);
+                channel = newState.member.guild.channels.create({
+                    name: team,
+                    type: ChannelType.GuildVoice,
+                    parent: '1063634429819498570',
+                    permissionOverwrites: [{
+                        id: role.id,
+                        allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
+                    }]
+                }).then((channel) => {
+                    teamKeys.push(team);
+                    tmpTeams.set(team, channel);
+                    newState.member.voice.setChannel(channel);
+                }).catch();
+            case '1068259971248168991':
+                channel = newState.member.guild.channels.create({
+                    name: newState.member.user.username,
+                    type: ChannelType.GuildVoice,
+                    parent: '1062325305517293588',
+                    permissionOverwrites: [
+                        {
+                            id: newState.member.user.id,
+                            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
+                        },
+                        {
+                            id: newState.guild.id,
+                            deny: [PermissionsBitField.Flags.ViewChannel]
+                        }
+                    ]
+                }).then((channel) => {
+                    streamerKeys.push(newState.member.user.id);
+                    tmpStreamer.set(newState.member.user.id, channel);
+                    newState.member.voice.setChannel(channel);
+                }).catch();
         }
     } else {
         teamKeys.forEach(key => {
@@ -73,7 +97,17 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 tmpTeams.delete(key);
                 var index = teamKeys.indexOf(key)
                 if (index > -1) {
-                    teamKeys.splice(index, 1); // 2nd parameter means remove one item only
+                    teamKeys.splice(index, 1);
+                }
+            }
+        });
+        streamerKeys.forEach(key => {
+            if (tmpStreamer.get(key).members.size === 0) {
+                tmpStreamer.get(key).delete();
+                tmpStreamer.delete(key);
+                var index = streamerKeys.indexOf(key)
+                if (index > -1) {
+                    streamerKeys.splice(index, 1);
                 }
             }
         });
