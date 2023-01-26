@@ -28,6 +28,7 @@ const teams = [
     '1055614374796070912', //Synergy
     '1063054923819921438', //Drifting Hulks
     '1014263903905124392', //E-Sport Team
+    'none'
 ];
 
 const tmpTeams = new Collection();
@@ -54,11 +55,15 @@ client.on('messageCreate', function(msg) {
 client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member.user.bot) {
         return;
-    } else if (oldState.channelId === null) {
+    } else {
         var channel;
+        const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone'); 
         switch(newState.channelId) {
             case '1067923396354113617':
                 const team = getTeam(newState.member);
+                if(team === 'none') {
+                    break;
+                }
                 const role = newState.guild.roles.cache.find(role => role.name === team);
                 channel = newState.member.guild.channels.create({
                     name: team,
@@ -67,7 +72,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                     permissionOverwrites: [{
                         id: role.id,
                         allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
-                    }]
+                    },
+                    {
+                        id: everyoneRole.id,
+                        deny: [PermissionsBitField.Flags.Connect]
+                    }
+                ]
                 }).then((channel) => {
                     teamKeys.push(team);
                     tmpTeams.set(team, channel);
@@ -85,8 +95,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                             allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
                         },
                         {
-                            id: newState.guild.id,
-                            deny: [PermissionsBitField.Flags.ViewChannel]
+                            id: everyoneRole.id,
+                            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ViewChannel],
+                            deny: [PermissionsBitField.Flags.Connect]
                         }
                     ]
                 }).then((channel) => {
@@ -120,48 +131,47 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 }).catch();
                 break;
         }
-    } else {
-        teamKeys.forEach(key => {
-            if (tmpTeams.get(key).members.size === 0) {
-                tmpTeams.get(key).delete();
-                tmpTeams.delete(key);
-                var index = teamKeys.indexOf(key)
-                if (index > -1) {
-                    teamKeys.splice(index, 1);
-                }
-            }
-        });
-        streamerKeys.forEach(key => {
-            if (tmpStreamer.get(key).members.size === 0) {
-                tmpStreamer.get(key).delete();
-                tmpStreamer.delete(key);
-                var index = streamerKeys.indexOf(key)
-                if (index > -1) {
-                    streamerKeys.splice(index, 1);
-                }
-            }
-        });
-        searchPlayersKeys.forEach(key => {
-            if (tmpSearchPlayers.get(key).members.size === 0) {
-                tmpSearchPlayers.get(key).delete();
-                tmpSearchPlayers.delete(key);
-                var index = searchPlayersKeys.indexOf(key)
-                if (index > -1) {
-                    searchPlayersKeys.splice(index, 1);
-                }
-            }
-        });
-        clanLoungeKeys.forEach(key => {
-            if (tmpClanLounge.get(key).members.size === 0) {
-                tmpClanLounge.get(key).delete();
-                tmpClanLounge.delete(key);
-                var index = clanLoungeKeys.indexOf(key)
-                if (index > -1) {
-                    clanLoungeKeys.splice(index, 1);
-                }
-            }
-        });
     }
+    teamKeys.forEach(key => {
+        if (tmpTeams.get(key).members.size === 0) {
+            tmpTeams.get(key).delete();
+            tmpTeams.delete(key);
+            var index = teamKeys.indexOf(key)
+            if (index > -1) {
+                teamKeys.splice(index, 1);
+            }
+        }
+    });
+    streamerKeys.forEach(key => {
+        if (tmpStreamer.get(key).members.size === 0) {
+            tmpStreamer.get(key).delete();
+            tmpStreamer.delete(key);
+            var index = streamerKeys.indexOf(key)
+            if (index > -1) {
+                streamerKeys.splice(index, 1);
+            }
+        }
+    });
+    searchPlayersKeys.forEach(key => {
+        if (tmpSearchPlayers.get(key).members.size === 0) {
+            tmpSearchPlayers.get(key).delete();
+            tmpSearchPlayers.delete(key);
+            var index = searchPlayersKeys.indexOf(key)
+            if (index > -1) {
+                searchPlayersKeys.splice(index, 1);
+            }
+        }
+    });
+    clanLoungeKeys.forEach(key => {
+        if (tmpClanLounge.get(key).members.size === 0) {
+            tmpClanLounge.get(key).delete();
+            tmpClanLounge.delete(key);
+            var index = clanLoungeKeys.indexOf(key)
+            if (index > -1) {
+                clanLoungeKeys.splice(index, 1);
+            }
+        }
+    });
 });
 
 client.login('#####');
@@ -170,6 +180,8 @@ function getTeam(member) {
     for (let i = 0; i < teams.length; i++) {
         if (member.roles.cache.has(teams[i])) {
             return member.roles.cache.get(teams[i]).name;
+        } else if(teams[i] === 'none') {
+            return teams[i];
         }
     }
 }
