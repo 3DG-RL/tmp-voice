@@ -45,6 +45,9 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', function(msg) {
+    if (msg.member.user.bot) {
+        return;
+    }
     if (msg.member.permissionsIn(msg.channel).has(8)) {
         if (msg.content === '/reset-3dg-tmp-voice') {
             tmpTeams = new Collection();
@@ -140,55 +143,55 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 }).catch();
                 break;
         }
+        teamKeys.forEach(key => {
+            try {
+                if (tmpTeams.get(key).members.size === 0) {
+                    tmpTeams.get(key).delete();
+                    tmpTeams.delete(key);
+                    var index = teamKeys.indexOf(key)
+                    if (index > -1) {
+                        teamKeys.splice(index, 1);
+                    }
+                }
+            } catch (exception) {}
+        });
+        streamerKeys.forEach(key => {
+            try {
+                if (tmpStreamer.get(key).members.size === 0) {
+                    tmpStreamer.get(key).delete();
+                    tmpStreamer.delete(key);
+                    var index = streamerKeys.indexOf(key)
+                    if (index > -1) {
+                        streamerKeys.splice(index, 1);
+                    }
+                }
+            } catch (exception) {}
+        });
+        searchPlayersKeys.forEach(key => {
+            try {
+                if (tmpSearchPlayers.get(key).members.size === 0) {
+                    tmpSearchPlayers.get(key).delete();
+                    tmpSearchPlayers.delete(key);
+                    var index = searchPlayersKeys.indexOf(key)
+                    if (index > -1) {
+                        searchPlayersKeys.splice(index, 1);
+                    }
+                }
+            } catch (exception) {}
+        });
+        clanLoungeKeys.forEach(key => {
+            try {
+                if (tmpClanLounge.get(key).members.size === 0) {
+                    tmpClanLounge.get(key).delete();
+                    tmpClanLounge.delete(key);
+                    var index = clanLoungeKeys.indexOf(key)
+                    if (index > -1) {
+                        clanLoungeKeys.splice(index, 1);
+                    }
+                }
+            } catch (exception) {}
+        });
     }
-    teamKeys.forEach(key => {
-        try {
-            if (tmpTeams.get(key).members.size === 0) {
-                tmpTeams.get(key).delete();
-                tmpTeams.delete(key);
-                var index = teamKeys.indexOf(key)
-                if (index > -1) {
-                    teamKeys.splice(index, 1);
-                }
-            }
-        } catch (exception) {}
-    });
-    streamerKeys.forEach(key => {
-        try {
-            if (tmpStreamer.get(key).members.size === 0) {
-                tmpStreamer.get(key).delete();
-                tmpStreamer.delete(key);
-                var index = streamerKeys.indexOf(key)
-                if (index > -1) {
-                    streamerKeys.splice(index, 1);
-                }
-            }
-        } catch (exception) {}
-    });
-    searchPlayersKeys.forEach(key => {
-        try {
-            if (tmpSearchPlayers.get(key).members.size === 0) {
-                tmpSearchPlayers.get(key).delete();
-                tmpSearchPlayers.delete(key);
-                var index = searchPlayersKeys.indexOf(key)
-                if (index > -1) {
-                    searchPlayersKeys.splice(index, 1);
-                }
-            }
-        } catch (exception) {}
-    });
-    clanLoungeKeys.forEach(key => {
-        try {
-            if (tmpClanLounge.get(key).members.size === 0) {
-                tmpClanLounge.get(key).delete();
-                tmpClanLounge.delete(key);
-                var index = clanLoungeKeys.indexOf(key)
-                if (index > -1) {
-                    clanLoungeKeys.splice(index, 1);
-                }
-            }
-        } catch (exception) {}
-    });
 });
 
 client.login('#####');
