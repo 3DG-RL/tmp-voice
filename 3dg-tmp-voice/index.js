@@ -31,17 +31,33 @@ const teams = [
     'none'
 ];
 
-const tmpTeams = new Collection();
-const teamKeys = [];
-const tmpStreamer = new Collection();
-const streamerKeys = [];
-const tmpSearchPlayers = new Collection();
-const searchPlayersKeys = [];
-const tmpClanLounge = new Collection();
-const clanLoungeKeys = [];
+var tmpTeams = new Collection();
+var teamKeys = [];
+var tmpStreamer = new Collection();
+var streamerKeys = [];
+var tmpSearchPlayers = new Collection();
+var searchPlayersKeys = [];
+var tmpClanLounge = new Collection();
+var clanLoungeKeys = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('messageCreate', function(msg) {
+    if (msg.member.permissionsIn(msg.channel).has(8)) {
+        if (msg.content === '/reset-3dg-tmp-voice') {
+            tmpTeams = new Collection();
+            teamKeys = [];
+            tmpStreamer = new Collection();
+            streamerKeys = [];
+            tmpSearchPlayers = new Collection();
+            searchPlayersKeys = [];
+            tmpClanLounge = new Collection();
+            clanLoungeKeys = [];
+            msg.reply('Der 3DG Voice Channel Bot wurde zurückgesetzt, alle noch vorhandenen Sprachkanäle müssen manuell gelöscht werden!');
+        }
+    }
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
