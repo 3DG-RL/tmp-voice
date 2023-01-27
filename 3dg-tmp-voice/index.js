@@ -44,53 +44,46 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', function(msg) {
-    if (msg.content === '/3dg-tmp-voice') {
-        msg.reply('Connection established!');
-    } else if (msg.content === '/3dg-team') {
-        msg.reply(getTeam(msg.member));
-    }
-});
-
 client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member.user.bot) {
         return;
     } else {
         var channel;
-        const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone'); 
-        switch(newState.channelId) {
+        const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
+        switch (newState.channelId) {
             case '1067923396354113617':
-                const team = getTeam(newState.member);
-                if(team === 'none') {
-                    break;
-                }
-                const role = newState.guild.roles.cache.find(role => role.name === team);
-                channel = newState.member.guild.channels.create({
-                    name: team,
-                    type: ChannelType.GuildVoice,
-                    parent: '1063634429819498570',
-                    permissionOverwrites: [{
-                        id: role.id,
-                        allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
-                    },
-                    {
-                        id: everyoneRole.id,
-                        deny: [PermissionsBitField.Flags.Connect]
+                try {
+                    const team = getTeam(newState.member);
+                    if (team === 'none') {
+                        break;
                     }
-                ]
-                }).then((channel) => {
-                    teamKeys.push(team);
-                    tmpTeams.set(team, channel);
-                    newState.member.voice.setChannel(channel);
-                }).catch();
+                    const role = newState.guild.roles.cache.find(role => role.name === team);
+                    channel = newState.member.guild.channels.create({
+                        name: team,
+                        type: ChannelType.GuildVoice,
+                        parent: '1063634429819498570',
+                        permissionOverwrites: [{
+                                id: role.id,
+                                allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
+                            },
+                            {
+                                id: everyoneRole.id,
+                                deny: [PermissionsBitField.Flags.Connect]
+                            }
+                        ]
+                    }).then((channel) => {
+                        teamKeys.push(team);
+                        tmpTeams.set(team, channel);
+                        newState.member.voice.setChannel(channel).catch();
+                    }).catch();
+                } catch (exception) {}
                 break;
             case '1068259971248168991':
                 channel = newState.member.guild.channels.create({
                     name: newState.member.user.username,
                     type: ChannelType.GuildVoice,
                     parent: '1062325305517293588',
-                    permissionOverwrites: [
-                        {
+                    permissionOverwrites: [{
                             id: newState.member.user.id,
                             allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
                         },
@@ -107,7 +100,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 }).catch();
                 break;
             case '1068274454557372556':
-                var iterator = Math.max(...searchPlayersKeys) === -Infinity? 1 : Math.max(...searchPlayersKeys) + 1;
+                var iterator = Math.max(...searchPlayersKeys) === -Infinity ? 1 : Math.max(...searchPlayersKeys) + 1;
                 channel = newState.member.guild.channels.create({
                     name: 'Spielersuche ' + iterator,
                     type: ChannelType.GuildVoice,
@@ -119,11 +112,11 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 }).catch();
                 break;
             case '1068277947137544342':
-                var iterator = Math.max(...clanLoungeKeys) === -Infinity? 1 : Math.max(...clanLoungeKeys) + 1;
+                var iterator = Math.max(...clanLoungeKeys) === -Infinity ? 1 : Math.max(...clanLoungeKeys) + 1;
                 channel = newState.member.guild.channels.create({
                     name: 'Clan-Lounge ' + iterator,
                     type: ChannelType.GuildVoice,
-                    parent: '1055543864561246218',
+                    parent: '1068298107432996934',
                 }).then((channel) => {
                     clanLoungeKeys.push(iterator);
                     tmpClanLounge.set(iterator, channel);
@@ -133,44 +126,52 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         }
     }
     teamKeys.forEach(key => {
-        if (tmpTeams.get(key).members.size === 0) {
-            tmpTeams.get(key).delete();
-            tmpTeams.delete(key);
-            var index = teamKeys.indexOf(key)
-            if (index > -1) {
-                teamKeys.splice(index, 1);
+        try {
+            if (tmpTeams.get(key).members.size === 0) {
+                tmpTeams.get(key).delete();
+                tmpTeams.delete(key);
+                var index = teamKeys.indexOf(key)
+                if (index > -1) {
+                    teamKeys.splice(index, 1);
+                }
             }
-        }
+        } catch (exception) {}
     });
     streamerKeys.forEach(key => {
-        if (tmpStreamer.get(key).members.size === 0) {
-            tmpStreamer.get(key).delete();
-            tmpStreamer.delete(key);
-            var index = streamerKeys.indexOf(key)
-            if (index > -1) {
-                streamerKeys.splice(index, 1);
+        try {
+            if (tmpStreamer.get(key).members.size === 0) {
+                tmpStreamer.get(key).delete();
+                tmpStreamer.delete(key);
+                var index = streamerKeys.indexOf(key)
+                if (index > -1) {
+                    streamerKeys.splice(index, 1);
+                }
             }
-        }
+        } catch (exception) {}
     });
     searchPlayersKeys.forEach(key => {
-        if (tmpSearchPlayers.get(key).members.size === 0) {
-            tmpSearchPlayers.get(key).delete();
-            tmpSearchPlayers.delete(key);
-            var index = searchPlayersKeys.indexOf(key)
-            if (index > -1) {
-                searchPlayersKeys.splice(index, 1);
+        try {
+            if (tmpSearchPlayers.get(key).members.size === 0) {
+                tmpSearchPlayers.get(key).delete();
+                tmpSearchPlayers.delete(key);
+                var index = searchPlayersKeys.indexOf(key)
+                if (index > -1) {
+                    searchPlayersKeys.splice(index, 1);
+                }
             }
-        }
+        } catch (exception) {}
     });
     clanLoungeKeys.forEach(key => {
-        if (tmpClanLounge.get(key).members.size === 0) {
-            tmpClanLounge.get(key).delete();
-            tmpClanLounge.delete(key);
-            var index = clanLoungeKeys.indexOf(key)
-            if (index > -1) {
-                clanLoungeKeys.splice(index, 1);
+        try {
+            if (tmpClanLounge.get(key).members.size === 0) {
+                tmpClanLounge.get(key).delete();
+                tmpClanLounge.delete(key);
+                var index = clanLoungeKeys.indexOf(key)
+                if (index > -1) {
+                    clanLoungeKeys.splice(index, 1);
+                }
             }
-        }
+        } catch (exception) {}
     });
 });
 
@@ -179,8 +180,10 @@ client.login('#####');
 function getTeam(member) {
     for (let i = 0; i < teams.length; i++) {
         if (member.roles.cache.has(teams[i])) {
-            return member.roles.cache.get(teams[i]).name;
-        } else if(teams[i] === 'none') {
+            try {
+                return member.roles.cache.get(teams[i]).name;
+            } catch (exception) {}
+        } else if (teams[i] === 'none') {
             return teams[i];
         }
     }
