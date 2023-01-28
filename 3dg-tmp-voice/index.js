@@ -123,7 +123,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 channel = newState.member.guild.channels.create({
                     name: 'Spielersuche ' + iterator,
                     type: ChannelType.GuildVoice,
-                    parent: '1055543864561246218',
+                    parent: '1068298107432996934',
                 }).then((channel) => {
                     searchPlayersKeys.push(iterator);
                     tmpSearchPlayers.set(iterator, channel);
@@ -135,7 +135,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 channel = newState.member.guild.channels.create({
                     name: 'Clan-Lounge ' + iterator,
                     type: ChannelType.GuildVoice,
-                    parent: '1068298107432996934',
+                    parent: '1055543864561246218',
                 }).then((channel) => {
                     clanLoungeKeys.push(iterator);
                     tmpClanLounge.set(iterator, channel);
