@@ -45,22 +45,25 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', function(msg) {
-    if (msg.member.user.bot) {
-        return;
-    }
-    if (msg.member.permissionsIn(msg.channel).has(8)) {
-        if (msg.content === '/reset-3dg-tmp-voice') {
-            tmpTeams = new Collection();
-            teamKeys = [];
-            tmpStreamer = new Collection();
-            streamerKeys = [];
-            tmpSearchPlayers = new Collection();
-            searchPlayersKeys = [];
-            tmpClanLounge = new Collection();
-            clanLoungeKeys = [];
-            msg.reply('Der 3DG Voice Channel Bot wurde zurückgesetzt, alle noch vorhandenen Sprachkanäle müssen manuell gelöscht werden!');
+    try {
+        if (msg.member.user.bot) {
+            return;
         }
-    }
+        if (msg.member.permissionsIn(msg.channel).has(8)) {
+            if (msg.content === '/reset-3dg-tmp-voice') {
+                tmpTeams = new Collection();
+                teamKeys = [];
+                tmpStreamer = new Collection();
+                streamerKeys = [];
+                tmpSearchPlayers = new Collection();
+                searchPlayersKeys = [];
+                tmpClanLounge = new Collection();
+                clanLoungeKeys = [];
+                msg.reply('Der 3DG Voice Channel Bot wurde zurückgesetzt, alle noch vorhandenen Sprachkanäle müssen manuell gelöscht werden!');
+            }
+        }
+
+    } catch (exception) {}
 });
 
 client.on('voiceStateUpdate', (oldState, newState) => {
