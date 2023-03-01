@@ -1,4 +1,9 @@
-const { Client, GatewayIntentBits, Collection, ChannelType, PermissionsBitField } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, ChannelType, PermissionsBitField, time } = require('discord.js');
+const fs = require('fs');
+const yaml = require('js-yaml');
+const auth = require('./auth.json');
+const teamData = yaml.load(fs.readFileSync('./teams.yml', 'utf8'));
+const channelData = yaml.load(fs.readFileSync('channel.yml', 'utf8'));
 
 const client = new Client({
     intents: [
@@ -10,26 +15,6 @@ const client = new Client({
     ],
 });
 
-const teams = [
-    '1013903588596121740', //Royal Backflip
-    '1014211462513831957', //Next
-    '1013933523410890802', //Desire Kappa
-    '1013904710199169125', //Desire Delta
-    '1014209581720797184', //Underground
-    '1014209869563318283', //Spaceground
-    '1040717685929021514', //Groundforce
-    '1013882511694250064', //Vision
-    '1014211191490498643', //Vertigo
-    '1014292866195001455', //Equinox
-    '1031264077068111923', //Tetris
-    '1047204318647943178', //Sunrise
-    '1050142820301819977', //Trinity
-    '1050853775671300208', //Monarchs
-    '1055614374796070912', //Synergy
-    '1063054923819921438', //Drifting Hulks
-    '1014263903905124392', //E-Sport Team
-    'none'
-];
 
 var tmpTeams = new Collection();
 var teamKeys = [];
@@ -74,7 +59,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             var channel;
             const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
             switch (newState.channelId) {
-                case '1067923396354113617':
+                case (channelData.team_channel_id):
                     try {
                         const team = getTeam(newState.member);
                         if (team === 'none') {
@@ -84,7 +69,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         channel = newState.member.guild.channels.create({
                             name: team,
                             type: ChannelType.GuildVoice,
-                            parent: '1063634429819498570',
+                            parent: (channelData.team_channel_create),
                             permissionOverwrites: [{
                                     id: role.id,
                                     allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
@@ -101,12 +86,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         }).catch();
                     } catch (exception) {}
                     break;
-                case '1068259971248168991':
+                case (channelData.live_channel_id):
                     try {
                         channel = newState.member.guild.channels.create({
                             name: newState.member.user.username,
                             type: ChannelType.GuildVoice,
-                            parent: '1062325305517293588',
+                            parent: (channelData.live.channel_create),
                             permissionOverwrites: [{
                                     id: newState.member.user.id,
                                     allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
@@ -125,13 +110,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
                     } catch (exception) {}
                     break;
-                case '1068274454557372556':
+                case (channelData.ss_channel_id):
                     try {
                         var iterator = Math.max(...searchPlayersKeys) === -Infinity ? 1 : Math.max(...searchPlayersKeys) + 1;
                         channel = newState.member.guild.channels.create({
                             name: 'Spielersuche ' + iterator,
                             type: ChannelType.GuildVoice,
-                            parent: '1068298107432996934',
+                            parent: (channelData.ss_channel_create),
                         }).then(async(channel) => {
                             searchPlayersKeys.push(iterator);
                             tmpSearchPlayers.set(iterator, channel);
@@ -139,13 +124,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         }).catch();
                     } catch (exception) {}
                     break;
-                case '1069324349418524874':
+                case (channelData.clan_channel_id):
                     try {
                         var iterator = Math.max(...clanLoungeKeys) === -Infinity ? 1 : Math.max(...clanLoungeKeys) + 1;
                         channel = newState.member.guild.channels.create({
                             name: 'Clan-Lounge ' + iterator,
                             type: ChannelType.GuildVoice,
-                            parent: '1055543864561246218',
+                            parent: (channelData.clan_channel_create),
                         }).then(async(channel) => {
                             clanLoungeKeys.push(iterator);
                             tmpClanLounge.set(iterator, channel);
@@ -164,22 +149,21 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     } catch (exception) {}
 });
 
-client.login('#####');
+client.login(auth.token);
 
 function getTeam(member) {
     try {
-        for (let i = 0; i < teams.length; i++) {
-            if (member.roles.cache.has(teams[i])) {
+        for (let i = 0; i < teamData.length; i++) {
+            if (member.roles.cache.has(teamData[i])) {
                 try {
-                    return member.roles.cache.get(teams[i]).name;
+                    return member.roles.cache.get(teamData[i]).name;
                 } catch (exception) {}
-            } else if (teams[i] === 'none') {
-                return teams[i];
+            } else if (teamData[i] === 'none') {
+                return teamData[i];
             }
         }
     } catch (exception) {}
 }
-
 function removeChannels(channels, keys) {
     try {
         keys.forEach(async key => {
