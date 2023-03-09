@@ -164,6 +164,7 @@ function getTeam(member) {
         }
     } catch (exception) {}
 }
+
 function removeChannels(channels, keys) {
     try {
         keys.forEach(async key => {

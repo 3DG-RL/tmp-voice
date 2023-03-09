@@ -1,0 +1,1 @@
+A Discord bot offered for a ticket support
