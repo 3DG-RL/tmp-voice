@@ -1,9 +1,9 @@
 const { Client, GatewayIntentBits, Collection, ChannelType, PermissionsBitField, time } = require('discord.js');
 const fs = require('fs');
 const yaml = require('js-yaml');
-const auth = require('./auth.json');
-const teamData = yaml.load(fs.readFileSync('./teams.yml', 'utf8'));
-const channelData = yaml.load(fs.readFileSync('channel.yml', 'utf8'));
+const auth = require('./assets/auth.json');
+const teamData = yaml.load(fs.readFileSync('./assets/teams.yml', 'utf8'));
+const channelData = yaml.load(fs.readFileSync('./assets/channel.yml', 'utf8'));
 
 const client = new Client({
     intents: [

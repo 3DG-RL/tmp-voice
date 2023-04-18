@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const auth = require('./auth.json');
+const auth = require('./assets/auth.json');
 
 const client = new Client({
     intents: [
