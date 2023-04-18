@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } = require('discord.js');
 const auth = require('./assets/auth.json');
 
 const client = new Client({
@@ -14,23 +14,17 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.on('message', message => {
-    if (message.content === '!3dg-submit') {
-        const row = new Discord.MessageActionRow()
+client.on('messageCreate', async msg => {
+    if (msg.content === '!3dg-submit') {
+        const row = new ActionRowBuilder()
             .addComponents(
-                new Discord.MessageButton()
+                new ButtonBuilder()
                 .setCustomId('submit_button')
-                .setLabel('Submit')
-                .setStyle('PRIMARY')
+                .setLabel('Abschicken')
+                .setStyle('Secondary')
             );
-
-        message.channel.send('Bitte klicke auf den Submit-Button:', { components: [row] });
-    }
-});
-
-client.on('interactionCreate', async interaction => {
-    if (interaction.isButton() && interaction.customId === 'submit_button') {
-        await interaction.reply('Deine Antwort wurde gespeichert!');
+        msg.channel.send({ components: [row] })
+            .then(console.log('Submit-Button generated!'));
     }
 });
 
