@@ -16,44 +16,119 @@ client.on('ready', () => {
 
 client.on('messageCreate', async msg => {
     if (msg.content === '!3dg-submit') {
-        const row = new ActionRowBuilder()
+        const tournaments = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
-                .setCustomId('starter')
-                .setPlaceholder('Make a selection!')
+                .setCustomId('tournaments')
+                .setPlaceholder('Interesse an öffentlichen Turniere/Ligen?')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
-                    .setLabel('Bulbasaur')
-                    .setDescription('The dual-type Grass/Poison Seed Pokémon.')
-                    .setValue('bulbasaur'),
+                    .setLabel('Nitro League')
+                    .setValue('Nitro League'),
                     new StringSelectMenuOptionBuilder()
-                    .setLabel('Charmander')
-                    .setDescription('The Fire-type Lizard Pokémon.')
-                    .setValue('charmander'),
+                    .setLabel('DeSBL')
+                    .setValue('DeSBL'),
                     new StringSelectMenuOptionBuilder()
-                    .setLabel('Squirtle')
-                    .setDescription('The Water-type Tiny Turtle Pokémon.')
-                    .setValue('squirtle'),
+                    .setLabel('Alles')
+                    .setValue('Alles')
                 )
             );
-        const row2 = new ActionRowBuilder()
+        const mates = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                .setCustomId('mates')
+                .setPlaceholder('Alter der Teammates')
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('16+')
+                    .setValue('16+'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('18+')
+                    .setValue('18+'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('egal')
+                    .setValue('egal')
+                )
+            );
+
+        const availability = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                .setCustomId('availability')
+                .setPlaceholder('Verfügbarkeit')
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('Frühschicht')
+                    .setValue('Frühschicht'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('Spätschicht')
+                    .setValue('Spätschicht'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('morgens')
+                    .setValue('morgens'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('abends')
+                    .setValue('abends'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('Wochenende')
+                    .setValue('Wochenende')
+                )
+            );
+
+        const activity = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                .setCustomId('activity')
+                .setPlaceholder('Wöchentliche Aktivität')
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('2+ Tage')
+                    .setValue('2+ Tage'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('3+ Tage')
+                    .setValue('3+ Tage'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('5+ Tage')
+                    .setValue('5+ Tage')
+                )
+            );
+
+        const gamemode = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                .setCustomId('gamemode')
+                .setPlaceholder('Spielmodus')
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('1s')
+                    .setValue('1s'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('2s')
+                    .setValue('2s'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('3s')
+                    .setValue('3s')
+                )
+            );
+
+        const submit = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                .setCustomId('submit_button')
+                .setCustomId('submit')
                 .setLabel('Abschicken')
                 .setStyle('Secondary')
             );
 
-        msg.channel.send({ components: [row, row2] })
-            .then(console.log('Submit-Button generated!'))
+        msg.channel.send({ components: [tournaments, mates, availability, activity, gamemode] });
+        msg.channel.send({ components: [submit] });
     }
 });
 
 client.on('interactionCreate', (interaction) => {
     if (!interaction.isButton()) {
-        return;
+        return true;
     } else {
-
+        interaction.reply('Auswahl gespeichert!');
     }
 });
 
