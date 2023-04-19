@@ -123,25 +123,18 @@ client.on('messageCreate', async msg => {
                     .setValue('Extra Modes')
                 )
             );
-
-        const submit = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                .setCustomId('submit')
-                .setLabel('Abschicken')
-                .setStyle('Secondary')
-            );
-
         msg.channel.send({ components: [tournaments, mates, availability, activity, gamemode] });
-        msg.channel.send({ components: [submit] });
     }
 });
 
 client.on('interactionCreate', (interaction) => {
-    if (!interaction.isButton()) {
-        return true;
+    if (!interaction.isStringSelectMenu()) {
+        return;
     } else {
-        interaction.reply('Auswahl gespeichert!');
+        //TODO: save information in google docs entry
+        console.log(interaction.user);
+        console.log(interaction.customId);
+        interaction.reply({ content: 'Auswahl aktualisiert: ' + interaction.values, ephemeral: true });
     }
 });
 
