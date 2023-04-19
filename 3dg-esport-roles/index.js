@@ -20,6 +20,8 @@ client.on('messageCreate', async msg => {
             .addComponents(
                 new StringSelectMenuBuilder()
                 .setCustomId('tournaments')
+                .setMinValues(1)
+                .setMaxValues(3)
                 .setPlaceholder('Interesse an öffentlichen Turniere/Ligen?')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
@@ -37,6 +39,8 @@ client.on('messageCreate', async msg => {
             .addComponents(
                 new StringSelectMenuBuilder()
                 .setCustomId('mates')
+                .setMinValues(1)
+                .setMaxValues(1)
                 .setPlaceholder('Alter der Teammates')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
@@ -55,6 +59,8 @@ client.on('messageCreate', async msg => {
             .addComponents(
                 new StringSelectMenuBuilder()
                 .setCustomId('availability')
+                .setMinValues(1)
+                .setMaxValues(5)
                 .setPlaceholder('Verfügbarkeit')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
@@ -79,6 +85,8 @@ client.on('messageCreate', async msg => {
             .addComponents(
                 new StringSelectMenuBuilder()
                 .setCustomId('activity')
+                .setMinValues(1)
+                .setMaxValues(1)
                 .setPlaceholder('Wöchentliche Aktivität')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
@@ -97,6 +105,8 @@ client.on('messageCreate', async msg => {
             .addComponents(
                 new StringSelectMenuBuilder()
                 .setCustomId('gamemode')
+                .setMinValues(1)
+                .setMaxValues(4)
                 .setPlaceholder('Spielmodus')
                 .addOptions(
                     new StringSelectMenuOptionBuilder()
@@ -107,7 +117,10 @@ client.on('messageCreate', async msg => {
                     .setValue('2s'),
                     new StringSelectMenuOptionBuilder()
                     .setLabel('3s')
-                    .setValue('3s')
+                    .setValue('3s'),
+                    new StringSelectMenuOptionBuilder()
+                    .setLabel('Extra Modes')
+                    .setValue('Extra Modes')
                 )
             );
 
