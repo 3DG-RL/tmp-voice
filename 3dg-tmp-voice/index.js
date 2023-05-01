@@ -36,7 +36,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         var channel;
         const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
         switch (newState.channelId) {
-            case (channelData.team_channel_id):
+            case (channelData.teamCreate):
                 console.log(`[${new Date().toLocaleString()}]: Team Channel: Start`);
                 const team = getTeam(newState.member);
                 if (team === 'none') {
@@ -46,7 +46,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 channel = newState.member.guild.channels.create({
                     name: team,
                     type: ChannelType.GuildVoice,
-                    parent: (channelData.team_channel_create),
+                    parent: (channelData.teamParent),
                     permissionOverwrites: [{
                             id: role.id,
                             allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
@@ -65,12 +65,12 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 });
                 console.log(`[${new Date().toLocaleString()}]: Team Channel: Success`);
                 break;
-            case (channelData.live_channel_id):
+            case (channelData.liveCreate):
                 console.log(`[${new Date().toLocaleString()}]: Live Channel: Start`);
                 channel = newState.member.guild.channels.create({
                     name: newState.member.user.username,
                     type: ChannelType.GuildVoice,
-                    parent: (channelData.live.channel_create),
+                    parent: (channelData.liveParent),
                     permissionOverwrites: [{
                             id: newState.member.user.id,
                             allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
@@ -90,13 +90,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 });
                 console.log(`[${new Date().toLocaleString()}]: Live Channel: Success`);
                 break;
-            case (channelData.ss_channel_id):
+            case (channelData.playersearchCreate):
                 console.log(`[${new Date().toLocaleString()}]: Playersearch Channel: Start`);
                 var iterator = Math.max(...searchPlayersKeys) === -Infinity ? 1 : Math.max(...searchPlayersKeys) + 1;
                 channel = newState.member.guild.channels.create({
                     name: 'Spielersuche ' + iterator,
                     type: ChannelType.GuildVoice,
-                    parent: (channelData.ss_channel_create),
+                    parent: (channelData.playersearchParent),
                 }).then(async(channel) => {
                     searchPlayersKeys.push(iterator);
                     tmpSearchPlayers.set(iterator, channel);
@@ -106,13 +106,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 });
                 console.log(`[${new Date().toLocaleString()}]: Playersearch Channel: Success`);
                 break;
-            case (channelData.clan_channel_id):
+            case (channelData.clanloungeCreate):
                 console.log(`[${new Date().toLocaleString()}]: Clanlounge Channel: Start`);
                 var iterator = Math.max(...clanLoungeKeys) === -Infinity ? 1 : Math.max(...clanLoungeKeys) + 1;
                 channel = newState.member.guild.channels.create({
                     name: 'Clan-Lounge ' + iterator,
                     type: ChannelType.GuildVoice,
-                    parent: (channelData.clan_channel_create),
+                    parent: (channelData.clanloungeParent),
                 }).then(async(channel) => {
                     clanLoungeKeys.push(iterator);
                     tmpClanLounge.set(iterator, channel);
