@@ -15,15 +15,10 @@ const client = new Client({
     ],
 });
 
-
 var tmpTeams = new Collection();
 var teamKeys = [];
 var tmpStreamer = new Collection();
 var streamerKeys = [];
-var tmpSearchPlayers = new Collection();
-var searchPlayersKeys = [];
-var tmpClanLounge = new Collection();
-var clanLoungeKeys = [];
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -90,43 +85,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 });
                 console.log(`[${new Date().toLocaleString()}]: Live Channel: Success`);
                 break;
-            case (channelData.playersearchCreate):
-                console.log(`[${new Date().toLocaleString()}]: Playersearch Channel: Start`);
-                var iterator = Math.max(...searchPlayersKeys) === -Infinity ? 1 : Math.max(...searchPlayersKeys) + 1;
-                channel = newState.member.guild.channels.create({
-                    name: 'Spielersuche ' + iterator,
-                    type: ChannelType.GuildVoice,
-                    parent: (channelData.playersearchParent),
-                }).then(async(channel) => {
-                    searchPlayersKeys.push(iterator);
-                    tmpSearchPlayers.set(iterator, channel);
-                    await newState.member.voice.setChannel(channel);
-                }).catch((error) => {
-                    console.error(`[${new Date().toLocaleString()}]: ${error}`);
-                });
-                console.log(`[${new Date().toLocaleString()}]: Playersearch Channel: Success`);
-                break;
-            case (channelData.clanloungeCreate):
-                console.log(`[${new Date().toLocaleString()}]: Clanlounge Channel: Start`);
-                var iterator = Math.max(...clanLoungeKeys) === -Infinity ? 1 : Math.max(...clanLoungeKeys) + 1;
-                channel = newState.member.guild.channels.create({
-                    name: 'Clan-Lounge ' + iterator,
-                    type: ChannelType.GuildVoice,
-                    parent: (channelData.clanloungeParent),
-                }).then(async(channel) => {
-                    clanLoungeKeys.push(iterator);
-                    tmpClanLounge.set(iterator, channel);
-                    await newState.member.voice.setChannel(channel);
-                }).catch((error) => {
-                    console.error(`[${new Date().toLocaleString()}]: ${error}`);
-                });
-                console.log(`[${new Date().toLocaleString()}]: Clanlounge Channel: Success`);
-                break;
         }
         removeChannels(tmpTeams, teamKeys);
         removeChannels(tmpStreamer, streamerKeys);
-        removeChannels(tmpSearchPlayers, searchPlayersKeys);
-        removeChannels(tmpClanLounge, clanLoungeKeys);
     }
 });
 
