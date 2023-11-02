@@ -1,5 +1,5 @@
 {
-    "keys": ["tournaments", "mates", "availability", "activity", "gamemode"],
+    "keys": ["tournaments", "age", "availability", "activity", "gamemode"],
     "tournaments": {
         "placeholder": "Interesse an öffentlichen Turniere/Ligen?",
         "min": 1,
@@ -18,7 +18,7 @@
             }
         ]
     },
-    "mates": {
+    "age": {
         "placeholder": "Alter der Teammates",
         "min": 1,
         "max": 1,
@@ -35,7 +35,7 @@
                 "value": "Egal"
             }
         ]
-    },
+},
     "availability": {
         "placeholder": "Verfügbarkeit",
         "min": 1,

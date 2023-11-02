@@ -6,6 +6,7 @@
     "author": "marcelnoehre",
     "license": "ISC",
     "dependencies": {
-        "discord.js": "^14.8.0"
+        "discord.js": "^14.8.0",
+        "xlsx": "^0.18.5"
     }
 }
