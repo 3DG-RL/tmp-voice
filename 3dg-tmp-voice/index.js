@@ -4,7 +4,7 @@ const yaml = require('js-yaml');
 const auth = require('./assets/auth.json');
 const teamData = yaml.load(fs.readFileSync('./assets/teams.yml', 'utf8'));
 const channelData = yaml.load(fs.readFileSync('./assets/channel.yml', 'utf8'));
-
+let channels = new Collection();
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -15,12 +15,8 @@ const client = new Client({
     ],
 });
 
-var tmpTeams = new Collection();
-var teamKeys = [];
-var tmpStreamer = new Collection();
-var streamerKeys = [];
-
 client.on('ready', () => {
+    client.user.setActivity('3DG Team Voice');
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
@@ -28,22 +24,23 @@ client.on('voiceStateUpdate', (oldState, newState) => {
     if (oldState.member.user.bot) {
         return;
     } else {
-        var channel;
         const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
-        switch (newState.channelId) {
-            case (channelData.teamCreate):
+        if (newState.channelId === channelData.teamCreate) {
+            const team = getTeam(newState.member);
+            if (team !== 'none') {
                 console.log(`[${new Date().toLocaleString()}]: Team Channel: Start`);
-                const team = getTeam(newState.member);
-                if (team === 'none') {
-                    break;
-                }
                 const role = newState.guild.roles.cache.find(role => role.name === team);
-                channel = newState.member.guild.channels.create({
-                    name: team,
+                let name = uniqueIdentifier(team);
+                newState.member.guild.channels.create({
+                    name: name,
                     type: ChannelType.GuildVoice,
                     parent: (channelData.teamParent),
                     permissionOverwrites: [{
                             id: role.id,
+                            allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
+                        },
+                        {
+                            id: channelData.coachRole,
                             allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
                         },
                         {
@@ -52,42 +49,15 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                         }
                     ]
                 }).then(async(channel) => {
-                    teamKeys.push(team);
-                    tmpTeams.set(team, channel);
+                    channels.set(name, channel);
                     await newState.member.voice.setChannel(channel).catch();
                 }).catch((error) => {
                     console.error(`[${new Date().toLocaleString()}]: ${error}`);
                 });
                 console.log(`[${new Date().toLocaleString()}]: Team Channel: Success`);
-                break;
-            case (channelData.liveCreate):
-                console.log(`[${new Date().toLocaleString()}]: Live Channel: Start`);
-                channel = newState.member.guild.channels.create({
-                    name: newState.member.user.username,
-                    type: ChannelType.GuildVoice,
-                    parent: (channelData.liveParent),
-                    permissionOverwrites: [{
-                            id: newState.member.user.id,
-                            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
-                        },
-                        {
-                            id: everyoneRole.id,
-                            allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ViewChannel],
-                            deny: [PermissionsBitField.Flags.Connect]
-                        }
-                    ]
-                }).then(async(channel) => {
-                    streamerKeys.push(newState.member.user.id);
-                    tmpStreamer.set(newState.member.user.id, channel);
-                    await newState.member.voice.setChannel(channel);
-                }).catch((error) => {
-                    console.error(`[${new Date().toLocaleString()}]: ${error}`);
-                });
-                console.log(`[${new Date().toLocaleString()}]: Live Channel: Success`);
-                break;
+            }
         }
-        removeChannels(tmpTeams, teamKeys);
-        removeChannels(tmpStreamer, streamerKeys);
+        removeChannels();
     }
 });
 
@@ -104,18 +74,31 @@ function getTeam(member) {
     }
 }
 
-function removeChannels(channels, keys) {
-    console.log(`[${new Date().toLocaleString()}]: Remove Channels: Start`);
-    keys.forEach(async key => {
-        if (channels.get(key).members.size === 0) {
-            await channels.get(key).delete().catch();
-            channels.delete(key);
-            var index = keys.indexOf(key)
-            if (index > -1) {
-                keys.splice(index, 1);
+function uniqueIdentifier(team) {
+    let [key, i, unique] = [team, 2, false];
+    while(!unique) {
+        for(let channel of channels) {
+            if (channel[0] === key) {
+                key = team + '_' + i.toString();
+                i++;
+                unique = false;
+                break;
             }
+            unique = true;
         }
-    });
+        if(channels.size === 0) unique = true;
+    }
+    return key;
+}
+
+async function removeChannels() {
+    console.log(`[${new Date().toLocaleString()}]: Remove Channels: Start`);
+    for (let channel of channels) {
+        if (channel[1].members.size === 0) {
+            await channel[1].delete().catch();
+            channels.delete(channel[0]);
+        }
+    }
     console.log(`[${new Date().toLocaleString()}]: Remove Channels: Success`);
 }
 
