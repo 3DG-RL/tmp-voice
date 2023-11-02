@@ -40,10 +40,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                             allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
                         },
                         {
-                            id: channelData.coachRole,
-                            allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
-                        },
-                        {
                             id: everyoneRole.id,
                             deny: [PermissionsBitField.Flags.Connect]
                         }
