@@ -20,7 +20,9 @@ client.on('ready', () => {
 });
 
 client.on('messageCreate', async msg => {
-    if (msg.content === '!3dg-submit') {
+    if (msg.content === '!3dg-help') {
+        msg.reply('Input Felder erstellen:\n**!3dg-inputs**\n\nExel-Tabelle (Esport-LFT):\n**!3dg-lft**');
+    } else if (msg.content === '!3dg-inputs') {
         let selectors = [];
         dropdown.keys.forEach((key) => {
             const selector = dropdown[key];
@@ -42,7 +44,7 @@ client.on('messageCreate', async msg => {
                 ));
         });
         msg.channel.send({ components: selectors });
-    } else if (msg.content === '!3dg-esport') {
+    } else if (msg.content === '!3dg-lft') {
         const workbook = XLSX.utils.book_new();
         fs.readFile('assets/user-data.json', 'utf8', async (err, data) => {
             const sheetData = [['Spieler', 'Turniere', 'Alter (Mates)', 'Verfügbarkeit', 'Aktivität', 'Spielmodus']];
