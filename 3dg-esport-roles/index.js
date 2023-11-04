@@ -87,9 +87,10 @@ client.on('interactionCreate', (interaction) => {
                 
                 let jsonData = JSON.parse(data);
                 delete jsonData[interaction.user.id];
+                interaction.member.roles.remove(interaction.guild.roles.cache.find((role) => role.name === 'LFT'));
                 fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
                     if (err) return false;
-                    
+
                     interaction.reply({ content: 'Du wurdest aus der Liste entfernt', ephemeral: true});
                 });
             });
@@ -120,6 +121,7 @@ function updateUserData(interaction) {
 
         fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
             if (err) return false;
+            interaction.member.roles.add(interaction.guild.roles.cache.find((role) => role.name === 'LFT'));
         });
     });
     return true;
