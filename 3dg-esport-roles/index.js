@@ -1,5 +1,4 @@
-const { Client, GatewayIntentBits, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
-const Discord = require('discord.js');
+const { Client, GatewayIntentBits, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ButtonBuilder } = require('discord.js');
 const XLSX = require('xlsx');
 const auth = require('./assets/auth.json');
 const dropdown = require('./assets/dropdown.json');
@@ -21,7 +20,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', async msg => {
     if (msg.content === '!3dg-help') {
-        msg.reply('Input Felder erstellen:\n**!3dg-inputs**\n\nExel-Tabelle (Esport-LFT):\n**!3dg-lft**');
+        msg.reply('Inputfelder erstellen:\n**!3dg-inputs**\n\nExel-Tabelle (Esport-LFT):\n**!3dg-lft**');
     } else if (msg.content === '!3dg-inputs') {
         let selectors = [];
         dropdown.keys.forEach((key) => {
@@ -43,20 +42,28 @@ client.on('messageCreate', async msg => {
                     .addOptions(options)
                 ));
         });
+        const remove = new ActionRowBuilder()
+            .addComponents(new ButtonBuilder()
+                .setCustomId('remove_button')
+                .setLabel(dropdown.remove)
+                .setStyle('Secondary'))
         msg.channel.send({ components: selectors });
+        msg.channel.send({ components: [remove] });
     } else if (msg.content === '!3dg-lft') {
         const workbook = XLSX.utils.book_new();
         fs.readFile('assets/user-data.json', 'utf8', async (err, data) => {
-            const sheetData = [['Spieler', 'Turniere', 'Alter (Mates)', 'Verfügbarkeit', 'Aktivität', 'Spielmodus']];
+            let headers = ['Spieler']
+            for(let key of dropdown.keys) {
+                headers.push(dropdown[key].header);
+            }
+            const sheetData = [headers];
             data = JSON.parse(data);
             Object.keys(data).forEach((player) => {
                 const row = [];
                 row.push(data[player].player)
-                row.push(data[player].tournaments.map(item => item.replace(/"/g, '')).join(', '));
-                row.push(data[player].age.map(item => item.replace(/"/g, '')).join(', '));
-                row.push(data[player].availability.map(item => item.replace(/"/g, '')).join(', '));
-                row.push(data[player].activity.map(item => item.replace(/"/g, '')).join(', '));
-                row.push(data[player].gamemode.map(item => item.replace(/"/g, '')).join(', '));
+                for(let key of dropdown.keys) {
+                    row.push(data[player][key].map((item) => item.replace(/"/g, '')).join(', '));
+                }
                 sheetData.push(row);
             });
             const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
@@ -87,18 +94,18 @@ client.on('interactionCreate', (interaction) => {
 function updateUserData(interaction) {
     fs.readFile('assets/user-data.json', 'utf8', (err, data) => {
         if (err) return false;
+
         let jsonData = JSON.parse(data);
         if (!jsonData.hasOwnProperty(interaction.user.id)) {
-            jsonData[interaction.user.id] = {
-                player: interaction.user.name,
-                tournaments: [],
-                age: [],
-                availability: [],
-                activity: [],
-                gamemode: []
-            };
+            jsonData[interaction.user.id] = { player: interaction.user.name };
+
+            for(let key of dropdown.keys) {
+                jsonData[interaction.user.id][key] = [];
+            }
         }
+
         jsonData[interaction.user.id][interaction.customId] = interaction.values;
+
         fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
             if (err) return false;
         });
