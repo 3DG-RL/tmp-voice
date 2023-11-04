@@ -81,7 +81,19 @@ client.on('messageCreate', async msg => {
 
 client.on('interactionCreate', (interaction) => {
     if (!interaction.isStringSelectMenu()) {
-        return;
+        if (interaction.customId === 'remove_button') {
+            fs.readFile('assets/user-data.json', 'utf8', (err, data) => {
+                if (err) return false;
+                
+                let jsonData = JSON.parse(data);
+                delete jsonData[interaction.user.id];
+                fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
+                    if (err) return false;
+                    
+                    interaction.reply({ content: 'Du wurdest aus der Liste entfernt', ephemeral: true});
+                });
+            });
+        }
     } else {
         if(updateUserData(interaction)) {
             interaction.reply({ content: 'Auswahl aktualisiert: ' + interaction.values, ephemeral: true });
