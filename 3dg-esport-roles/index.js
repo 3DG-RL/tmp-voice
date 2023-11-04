@@ -49,6 +49,7 @@ client.on('messageCreate', async msg => {
                 .setStyle('Secondary'))
         msg.channel.send({ components: selectors });
         msg.channel.send({ components: [remove] });
+        console.log(`[${new Date().toLocaleString()}]: Selection-UI generated`);
     } else if (msg.content === '!3dg-lft') {
         const workbook = XLSX.utils.book_new();
         fs.readFile('assets/user-data.json', 'utf8', async (err, data) => {
@@ -75,6 +76,7 @@ client.on('messageCreate', async msg => {
                     name: '3DG-Esport-LFT.xlsx'
                 }]
             });
+            console.log(`[${new Date().toLocaleString()}]: Exel-file generated`);
         });
     }
 });
@@ -83,15 +85,22 @@ client.on('interactionCreate', (interaction) => {
     if (!interaction.isStringSelectMenu()) {
         if (interaction.customId === 'remove_button') {
             fs.readFile('assets/user-data.json', 'utf8', (err, data) => {
-                if (err) return false;
+                if (err) {
+                    console.log(`[${new Date().toLocaleString()}]: Removal failed!`);
+                    return false;
+                }
                 
                 let jsonData = JSON.parse(data);
                 delete jsonData[interaction.user.id];
                 interaction.member.roles.remove(interaction.guild.roles.cache.find((role) => role.name === 'LFT'));
                 fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
-                    if (err) return false;
+                    if (err) {
+                        console.log(`[${new Date().toLocaleString()}]: Removal failed!`);
+                        return false;
+                    }
 
                     interaction.reply({ content: 'Du wurdest aus der Liste entfernt', ephemeral: true});
+                    console.log(`[${new Date().toLocaleString()}]: Removed ${interaction.user.id} from list`);
                 });
             });
         }
@@ -106,7 +115,10 @@ client.on('interactionCreate', (interaction) => {
 
 function updateUserData(interaction) {
     fs.readFile('assets/user-data.json', 'utf8', (err, data) => {
-        if (err) return false;
+        if (err) {
+            console.log(`[${new Date().toLocaleString()}]: Update failed!`);
+            return false;
+        }
 
         let jsonData = JSON.parse(data);
         if (!jsonData.hasOwnProperty(interaction.user.id)) {
@@ -115,13 +127,18 @@ function updateUserData(interaction) {
             for(let key of dropdown.keys) {
                 jsonData[interaction.user.id][key] = [];
             }
+            console.log(`[${new Date().toLocaleString()}]: Added ${interaction.user.id} to the list`);
         }
 
         jsonData[interaction.user.id][interaction.customId] = interaction.values;
 
         fs.writeFile('assets/user-data.json', JSON.stringify(jsonData), (err) => {
-            if (err) return false;
+            if (err) {
+                console.log(`[${new Date().toLocaleString()}]: Update failed!`);
+                return false;
+            }
             interaction.member.roles.add(interaction.guild.roles.cache.find((role) => role.name === 'LFT'));
+            console.log(`[${new Date().toLocaleString()}]: Selection of ${interaction.user.id} updated`);
         });
     });
     return true;
