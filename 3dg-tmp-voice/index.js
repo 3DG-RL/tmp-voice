@@ -28,7 +28,6 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         if (newState.channelId === channelData.teamCreate) {
             const team = getTeam(newState.member);
             if (team !== 'none') {
-                console.log(`[${new Date().toLocaleString()}]: Team Channel: Start`);
                 const role = newState.guild.roles.cache.find(role => role.name === team);
                 let name = uniqueIdentifier(team);
                 newState.member.guild.channels.create({
@@ -47,10 +46,10 @@ client.on('voiceStateUpdate', (oldState, newState) => {
                 }).then(async(channel) => {
                     channels.set(name, channel);
                     await newState.member.voice.setChannel(channel).catch();
+                    console.log(`[${new Date().toLocaleString()}]: Created voice channel: ${name}`)
                 }).catch((error) => {
-                    console.error(`[${new Date().toLocaleString()}]: ${error}`);
+                    console.log(`[${new Date().toLocaleString()}]: Failed to create voice channel ${name}: ${error}`);
                 });
-                console.log(`[${new Date().toLocaleString()}]: Team Channel: Success`);
             }
         }
         removeChannels();
@@ -58,13 +57,10 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 function getTeam(member) {
-    console.log(`[${new Date().toLocaleString()}]: Get Team: Start`);
     for (let i = 0; i < teamData.length; i++) {
         if (member.roles.cache.has(teamData[i])) {
-            console.log(`[${new Date().toLocaleString()}]: Get Team: Success`);
             return member.roles.cache.get(teamData[i]).name;
         } else if (teamData[i] === 'none') {
-            console.log(`[${new Date().toLocaleString()}]: Get Team: Success`);
             return teamData[i];
         }
     }
@@ -88,14 +84,16 @@ function uniqueIdentifier(team) {
 }
 
 async function removeChannels() {
-    console.log(`[${new Date().toLocaleString()}]: Remove Channels: Start`);
     for (let channel of channels) {
-        if (channel[1].members.size === 0) {
-            await channel[1].delete().catch();
+        if (channel[1] && channel[1].members.size === 0) {
             channels.delete(channel[0]);
+            await channel[1].delete().then(
+                console.log(`[${new Date().toLocaleString()}]: Removed Channel: ${channel[0]}`)
+            ).catch((error) => {
+                console.error(`[${new Date().toLocaleString()}]: Failed to remove Channel ${channel[0]}: ${error.message}`);
+            });
         }
     }
-    console.log(`[${new Date().toLocaleString()}]: Remove Channels: Success`);
 }
 
 client.login(auth.token);
