@@ -96,4 +96,21 @@ async function removeChannels() {
     }
 }
 
+process.on('unhandledRejection', (error) => {
+    console.log(`[${new Date().toLocaleString()}]: Unhandled Promise Rejection: ${error.message}`);
+    restartBot();
+});
+
+process.on('uncaughtException', (error) => {
+    console.log(`[${new Date().toLocaleString()}]: Uncaught Exception: ${error.message}`);
+    restartBot();
+});
+
+function restartBot() {
+    console.log(`[${new Date().toLocaleString()}]: Restarting bot...`);
+    client.destroy();
+    channels = new Collection();
+    client.login(auth.token);
+}
+
 client.login(auth.token);
