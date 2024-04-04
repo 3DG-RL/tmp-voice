@@ -1,9 +1,7 @@
 const { Client, GatewayIntentBits, Collection, ChannelType, PermissionsBitField, time } = require('discord.js');
-const fs = require('fs');
-const yaml = require('js-yaml');
 const auth = require('./assets/auth.json');
-const teamData = yaml.load(fs.readFileSync('./assets/teams.yml', 'utf8'));
-const channelData = yaml.load(fs.readFileSync('./assets/channel.yml', 'utf8'));
+const teamData = require('./assets/teams.json');
+const channelData = require('./assets/channel.json');
 let channels = new Collection();
 const client = new Client({
     intents: [
@@ -57,10 +55,10 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 function getTeam(member) {
-    for (let i = 0; i < teamData.length; i++) {
-        if (member.roles.cache.has(teamData[i])) {
-            return member.roles.cache.get(teamData[i]).name;
-        } else if (teamData[i] === 'none') {
+    for (let i = 0; i < teamData.teams.length; i++) {
+        if (member.roles.cache.has(teamData.teams[i].id)) {
+            return member.roles.cache.get(teamData.teams[i].id).name;
+        } else if (teamData.teams[i].id === 'NONE') {
             return teamData[i];
         }
     }
