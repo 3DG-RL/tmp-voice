@@ -1,1 +1,0 @@
-A Discord bot that creates docs entries for Esportler based on the selected roles
