@@ -23,15 +23,15 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         return;
     } else {
         const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
-        if (newState.channelId === channelData.teamCreate) {
+        if (newState.channelId === channelData.teamEsportCreate || newState.channelId === channelData.teamCasualCreate) {
             const team = getTeam(newState.member);
-            if (team !== 'NONE') {
-                const role = newState.guild.roles.cache.find(role => role.name === team);
-                let name = uniqueIdentifier(team);
+            if (team.id !== 'NONE') {
+                const role = member.roles.cache.get(team.id);
+                let name = uniqueIdentifier(role.name);
                 newState.member.guild.channels.create({
                     name: name,
                     type: ChannelType.GuildVoice,
-                    parent: (channelData.teamParent),
+                    parent: (newState.channelId === channelData.teamEsportCreate ? channelData.teamEsportParent : channelData.teamCasualParent),
                     permissionOverwrites: [{
                             id: role.id,
                             allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.MoveMembers, PermissionsBitField.Flags.Speak, PermissionsBitField.Flags.Stream]
@@ -56,10 +56,8 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 function getTeam(member) {
     for (let i = 0; i < teamData.teams.length; i++) {
-        if (member.roles.cache.has(teamData.teams[i].id)) {
-            return member.roles.cache.get(teamData.teams[i].id).name;
-        } else if (teamData.teams[i].id === 'NONE') {
-            return teamData[i];
+        if (member.roles.cache.has(teamData.teams[i].id) || teamData.teams[i].id === 'NONE') {
+            return teamData.teams[i];
         }
     }
 }
