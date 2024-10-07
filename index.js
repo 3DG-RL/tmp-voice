@@ -25,7 +25,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
         const everyoneRole = newState.guild.roles.cache.find(role => role.name === '@everyone');
         if (newState.channelId === channelData.teamCreate) {
             const team = getTeam(newState.member);
-            if (team !== 'none') {
+            if (team !== 'NONE') {
                 const role = newState.guild.roles.cache.find(role => role.name === team);
                 let name = uniqueIdentifier(team);
                 newState.member.guild.channels.create({

@@ -1,116 +1,154 @@
 {
     "teams": [
         {
-            "name": "Royal Backflip",
-            "id": "1013903588596121740"
+            "name": "Aqua",
+            "id": "1289283256080011304",
+            "type": "ESPORTS"
         },
         {
-            "name": "Desire Kappa",
-            "id": "1013933523410890802"
+            "name": "Ballistic Blazers",
+            "id": "1260693577311195227",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Blvckscorpion",
+            "id": "1254417098000826409",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Boosted Diamond Slayers",
+            "id": "1206991487976345610",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "catZ",
+            "id": "1290755839619104809",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Cold Instinct",
+            "id": "1205268762811437056",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Desire Nightshade",
+            "id": "1231617494372978783",
+            "type": "ESPORTS"
         },
         {
             "name": "Desire Blackout",
-            "id": "1094020932663771157"
+            "id": "1094020932663771157",
+            "type": "ESPORTS"
         },
         {
-            "name": "Vision",
-            "id": "1013882511694250064"
+            "name": "Desire Indigo",
+            "id": "1013933523410890802",
+            "type": "CASUAL"
         },
         {
-            "name": "Equinox",
-            "id": "1014292866195001455"
-        },
-        {
-            "name": "Tetris",
-            "id": "1031264077068111923"
-        },
-        {
-            "name": "Monarchs",
-            "id": "1050853775671300208"
-        },
-        {
-            "name": "Nightshade",
-            "id": "1076893604649386084"
-        },
-        {
-            "name": "HydraX",
-            "id": "1113895864008724621"
-        },
-        {
-            "name": "Lumina",
-            "id": "1122635939089494055"
-        },
-        {
-            "name": "Ypsilon",
-            "id": "1187127093113409556"
-        },
-        {
-            "name": "Atramis",
-            "id": "1198695575684649131"
-        },
-        {
-            "name": "Infinity",
-            "id": "1201223813107560558"
-        },
-        {
-            "name": "Kallisto",
-            "id": "1183501391684178013"
-        },
-        {
-            "name": "Instinct",
-            "id": "1205268762811437056"
-        },
-        {
-            "name": "Blaq",
-            "id": "1205672415699406908"
-        },
-        {
-            "name": "Vulpestrike",
-            "id": "1208829679046369361"
-        },
-        {
-            "name": "Doomed",
-            "id": "1209852620001251409"
-        },
-        {
-            "name": "Velocity",
-            "id": "1210343472914112533"
-        },
-        {
-            "name": "BDS Franchise",
-            "id": "1216134425201479681"
-        },
-        {
-            "name": "Wolfs",
-            "id": "1214996974873477150"
+            "name": "Flying Bulls",
+            "id": "1279082456145985656",
+            "type": "ESPORTS"
         },
         {
             "name": "Hawks",
-            "id": "1214997018238521385"
+            "id": "1214997018238521385",
+            "type": "ESPORTS"
         },
         {
-            "name": "Chippigang",
-            "id": "1216326765455081563"
+            "name": "Hydra",
+            "id": "1283137427942146142",
+            "type": "ESPORTS"
         },
         {
-            "name": "Monkeys",
-            "id": "1217977374080110673"
+            "name": "Infinity Black",
+            "id": "1201223813107560558",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Infinity Crimson",
+            "id": "1221874727186993163",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Infinity Maroon",
+            "id": "1257021431150280774",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Infinity Purple",
+            "id": "1274837861254037606",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Nostalgia",
+            "id": "1288955641334861875",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Odem Hornet",
+            "id": "1264980950643769457",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Onyx",
+            "id": "1272984420118429837",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Phönix",
+            "id": "1289652266025881653",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Platzhalter",
+            "id": "1292523243995140106",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Rare Fairies",
+            "id": "1260727652025892956",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Reckless",
+            "id": "1255966816182730796",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Royal Backflip",
+            "id": "1013903588596121740",
+            "type": "CASUAL"
         },
         {
             "name": "Supreme",
-            "id": "1218374616934776893"
+            "id": "1218374616934776893",
+            "type": "CASUAL"
         },
         {
-            "name": "Sunrise",
-            "id": "1218935321383796746"
+            "name": "Supersonic Acrobats",
+            "id": "1274777941527629846",
+            "type": "ESPORTS"
         },
         {
-            "name": "prxy",
-            "id": "1221874727186993163"
+            "name": "Vision",
+            "id": "1013882511694250064",
+            "type": "ESPORTS"
         },
         {
-            "name": "important",
-            "id": "NONE"
+            "name": "Vulpestrike",
+            "id": "1208829679046369361",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "Void",
+            "id": "1226612972504350730",
+            "type": "ESPORTS"
+        },
+        {
+            "name": "NONE",
+            "id": "NONE",
+            "type": "NONE"
         }
     ]
 }
